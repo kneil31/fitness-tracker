@@ -107,19 +107,20 @@ position:relative;overflow:hidden;display:flex;align-items:flex-end;}
 .wb-bm{font-size:9px;color:var(--teal);font-weight:600;}
 .wb-extra{font-size:9px;color:var(--green);font-weight:700;}
 
-/* ═══ CALENDAR GRID ═══ */
-.cal-wrap{background:var(--card);border-radius:var(--r);padding:20px;margin-bottom:16px;overflow:hidden;}
-.cal-title{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:12px;text-align:center;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.cal-hdr{font-size:10px;font-weight:600;color:var(--t3);text-align:center;padding-bottom:6px;}
-.cal-cell{height:34px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-font-size:12px;font-weight:500;color:var(--t3);}
-.cal-cell.empty{background:transparent;}
-.cal-cell.rest{background:rgba(255,255,255,0.04);}
-.cal-cell.future{background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.12);}
-.cal-cell.today{background:rgba(255,215,64,0.15);color:#ffd740;font-weight:700;border:1.5px solid rgba(255,215,64,0.4);}
-.cal-cell.gym{font-weight:700;background:color-mix(in srgb, var(--gc) 15%, transparent);border:1.5px solid var(--gc);color:var(--gc);}
-.cal-cell.gym em{font-style:normal;font-size:7px;font-weight:700;line-height:1;opacity:0.8;}
+/* ═══ DOT MATRIX CALENDAR ═══ */
+.dot-cal{display:flex;gap:32px;justify-content:center;
+background:var(--card);border-radius:var(--r);padding:28px 32px;margin-bottom:16px;}
+.dot-month{display:flex;flex-direction:column;align-items:center;}
+.dot-label{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:12px;letter-spacing:0.5px;}
+.dot-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.05);transition:all .2s;}
+.dot.empty{background:transparent;}
+.dot.rest{background:rgba(255,255,255,0.06);}
+.dot.future{background:rgba(255,255,255,0.02);}
+.dot.today{background:rgba(255,215,64,0.3);box-shadow:0 0 8px rgba(255,215,64,0.3);
+animation:dotPulse 2s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 4px rgba(255,215,64,0.2);}50%{box-shadow:0 0 12px rgba(255,215,64,0.5);}}
+.dot.gym{border-radius:50%;}
 .dot-legend{display:flex;gap:16px;justify-content:center;margin-top:10px;
 font-size:10px;color:var(--t3);font-weight:500;}
 .dot-legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;}
@@ -154,10 +155,10 @@ color:var(--t2);text-decoration:none;font-size:12px;transition:all .2s;}
 .ex-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
 .ex-row:last-child{border-bottom:none;}
 .ex-info{flex:1;min-width:0;}
-.ex-gif{width:120px;height:120px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#111;}
+.ex-gif{width:80px;height:80px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#111;}
 .td-ex-wrap{margin-bottom:4px;}
-.td-gif{width:72px;height:72px;border-radius:8px;object-fit:cover;flex-shrink:0;margin-right:4px;background:#111;}
-@media(max-width:400px){.ex-gif{width:120px;height:120px;}.td-gif{width:72px;height:72px;}}
+.td-gif{width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0;margin-right:4px;background:#111;}
+@media(max-width:400px){.ex-gif{width:60px;height:60px;}.td-gif{width:40px;height:40px;}}
 .ex-btn{display:flex;gap:10px;margin-bottom:16px;}
 .ex-btn a{padding:10px 20px;border-radius:10px;font-size:12px;font-weight:600;text-decoration:none;
 background:var(--card);transition:all .2s;}.ex-btn a:hover{background:var(--card2);}
@@ -380,7 +381,7 @@ font-weight:600;font-family:inherit;transition:all .2s;}
 .hero{flex-direction:column;text-align:center;padding:28px;gap:16px;}
 .hero-n{font-size:56px;}
 .rings{gap:16px;flex-wrap:wrap;}
-.cal-wrap{max-width:100%;}
+.dot-cal{flex-direction:column;gap:20px;align-items:center;}
 h1{font-size:26px;}
 }
 </style>
@@ -392,7 +393,6 @@ h1{font-size:26px;}
 <button onclick="go('td')">Today</button>
 <button onclick="go('cr')">Coach</button>
 <button onclick="go('ex')">Exercises</button>
-<button onclick="go('ev')">v2</button>
 <button onclick="go('bm')">Body</button>
 <button onclick="go('hk')">Hacks</button>
 <button onclick="go('gl')">Gym</button>
@@ -408,7 +408,6 @@ h1{font-size:26px;}
 <a onclick="go('td')">✅ Today</a>
 <a onclick="go('cr')">📋 Coach Report</a>
 <a onclick="go('ex')">💪 Exercises</a>
-<a onclick="go('ev')">🆕 Exercises v2</a>
 <a onclick="go('bm')">📐 Body Metrics</a>
 <a onclick="go('hk')">🧠 Body Hacks</a>
 <a onclick="go('gl')">📅 Gym Log</a>
@@ -423,58 +422,58 @@ h1{font-size:26px;}
 <!-- ═══ OVERVIEW ═══ -->
 <div class="page on" id="ov">
 <h1>Fitness Tracker</h1>
-<div class="sub">Planet Fitness · Fittr Coach · Muscle First</div>
+<div class="sub">Planet Fitness · Fittr 4-Day Split · Target: 68 kg by April 10</div>
 
 <div class="hero">
 <div class="hero-n">13</div>
 <div class="hero-body">
 <div class="hero-l">days to April 10</div>
-<div class="hero-s">Krithin's Birthday · 70.6 kg · +2.6 from soft target</div>
+<div class="hero-s">Krithin's Birthday · 70.6 kg · +2.6 to go</div>
 </div>
 </div>
 
 <div class="mamba">
 <span style="font-size:22px;">🐍</span>
-<span class="mamba-q">"Be willing to sacrifice anything, but never sacrifice your preparation."</span>
+<span class="mamba-q">"I can't relate to lazy people. We don't speak the same language."</span>
 <span class="mamba-a">— KOBE</span>
 </div>
 
 <div class="rings"><div class="ring-wrap">
 <svg width="120" height="120" viewBox="0 0 120 120">
-<defs><filter id="rg9906" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
+<defs><filter id="rg1135" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
 <circle cx="60.0" cy="60.0" r="52.0" fill="none" stroke="#00e676" stroke-opacity="0.12" stroke-width="8"/>
 <circle cx="60.0" cy="60.0" r="52.0" fill="none" stroke="#00e676" stroke-width="8" stroke-linecap="round"
- stroke-dasharray="326.7256359733385" stroke-dashoffset="108.90854532444618" transform="rotate(-90 60.0 60.0)" filter="url(#rg9906)" class="ring-arc"/>
+ stroke-dasharray="326.7256359733385" stroke-dashoffset="326.7256359733385" transform="rotate(-90 60.0 60.0)" filter="url(#rg1135)" class="ring-arc"/>
 </svg>
-<div class="ring-v">2/3</div>
+<div class="ring-v">0/3</div>
 <div class="ring-s">THIS WEEK</div>
 </div><div class="ring-wrap">
 <svg width="120" height="120" viewBox="0 0 120 120">
-<defs><filter id="rg5578" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
+<defs><filter id="rg9358" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
 <circle cx="60.0" cy="60.0" r="52.0" fill="none" stroke="#448aff" stroke-opacity="0.12" stroke-width="8"/>
 <circle cx="60.0" cy="60.0" r="52.0" fill="none" stroke="#448aff" stroke-width="8" stroke-linecap="round"
- stroke-dasharray="326.7256359733385" stroke-dashoffset="320.12577812667706" transform="rotate(-90 60.0 60.0)" filter="url(#rg5578)" class="ring-arc"/>
+ stroke-dasharray="326.7256359733385" stroke-dashoffset="196.8848682375338" transform="rotate(-90 60.0 60.0)" filter="url(#rg9358)" class="ring-arc"/>
 </svg>
-<div class="ring-v">0k</div>
+<div class="ring-v">1k</div>
 <div class="ring-s">STEPS TODAY</div>
 </div><div class="ring-wrap">
 <svg width="120" height="120" viewBox="0 0 120 120">
-<defs><filter id="rg3049" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
+<defs><filter id="rg3349" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
 <circle cx="60.0" cy="60.0" r="52.0" fill="none" stroke="#b388ff" stroke-opacity="0.12" stroke-width="8"/>
 <circle cx="60.0" cy="60.0" r="52.0" fill="none" stroke="#b388ff" stroke-width="8" stroke-linecap="round"
- stroke-dasharray="326.7256359733385" stroke-dashoffset="61.941735153278756" transform="rotate(-90 60.0 60.0)" filter="url(#rg3049)" class="ring-arc"/>
+ stroke-dasharray="326.7256359733385" stroke-dashoffset="60.580378336723186" transform="rotate(-90 60.0 60.0)" filter="url(#rg3349)" class="ring-arc"/>
 </svg>
-<div class="ring-v">6h 29m</div>
+<div class="ring-v">6h 31m</div>
 <div class="ring-s">AVG SLEEP</div>
 </div></div>
 
 <div class="stats">
 <div class="stat" style="--ac:var(--green);"><div class="v">0</div><div class="l">Day Streak</div></div>
-<div class="stat" style="--ac:var(--blue);"><div class="v">16</div><div class="l">Mar Sessions</div></div>
+<div class="stat" style="--ac:var(--blue);"><div class="v">4</div><div class="l">Mar Sessions</div></div>
 <div class="stat" style="--ac:var(--yellow);"><div class="v">70.6<small> kg</small></div><div class="l">Weight</div></div>
-<div class="stat" style="--ac:var(--teal);"><div class="v">101</div><div class="l">Steps Today</div></div>
+<div class="stat" style="--ac:var(--teal);"><div class="v">1,987</div><div class="l">Steps Today</div></div>
 <div class="stat" style="--ac:var(--blue);"><div class="v">5,640</div><div class="l">Steps Yesterday</div></div>
-<div class="stat" style="--ac:var(--purple);"><div class="v">6h 42m</div><div class="l">Last Night Sleep</div></div>
+<div class="stat" style="--ac:var(--purple);"><div class="v">7h 10m</div><div class="l">Last Night Sleep</div></div>
 </div>
 
 <div class="label">30-Day Steps</div>
@@ -482,30 +481,30 @@ h1{font-size:26px;}
 <div class="chart-legend"><span><i style="background:var(--blue);"></i>Steps</span><span><i style="background:var(--green);"></i>5K Target</span></div>
 <svg viewBox="0 0 700 180" style="width:100%;display:block;">
 <defs>
-<linearGradient id="g1727" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="g6193" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0%" stop-color="#448aff" stop-opacity="0.3"/>
 <stop offset="100%" stop-color="#448aff" stop-opacity="0.02"/>
 </linearGradient>
 </defs>
 <line x1="40" y1="113" x2="684" y2="113" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="116" fill="#444" font-size="10" text-anchor="end" font-family="Inter">4k</text>
+<text x="34" y="116" fill="#444" font-size="10" text-anchor="end" font-family="Inter">3k</text>
 <line x1="40" y1="82" x2="684" y2="82" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="85" fill="#444" font-size="10" text-anchor="end" font-family="Inter">8k</text>
+<text x="34" y="85" fill="#444" font-size="10" text-anchor="end" font-family="Inter">6k</text>
 <line x1="40" y1="51" x2="684" y2="51" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="54" fill="#444" font-size="10" text-anchor="end" font-family="Inter">12k</text>
+<text x="34" y="54" fill="#444" font-size="10" text-anchor="end" font-family="Inter">9k</text>
 <line x1="40" y1="20" x2="684" y2="20" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">16k</text>
-<line x1="40" y1="105" x2="684" y2="105" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+<text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">12k</text>
+<line x1="40" y1="91" x2="684" y2="91" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
 
-<path d="M 40.0 64.9 C 48.9 64.9, 53.3 73.1, 62.2 73.1 C 71.1 73.1, 75.5 87.1, 84.4 87.1 C 93.3 87.1, 97.7 80.9, 106.6 80.9 C 115.5 80.9, 119.9 69.3, 128.8 69.3 C 137.7 69.3, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 36.2, 373.1 36.2 C 382.0 36.2, 386.4 64.7, 395.3 64.7 C 404.2 64.7, 408.6 64.2, 417.5 64.2 C 426.4 64.2, 430.8 64.1, 439.7 64.1 C 448.6 64.1, 453.0 58.8, 461.9 58.8 C 470.8 58.8, 475.3 64.6, 484.1 64.6 C 493.0 64.6, 497.5 61.4, 506.3 61.4 C 515.2 61.4, 519.7 64.8, 528.6 64.8 C 537.4 64.8, 541.9 55.3, 550.8 55.3 C 559.6 55.3, 564.1 65.0, 573.0 65.0 C 581.8 65.0, 586.3 98.3, 595.2 98.3 C 604.1 98.3, 608.5 111.3, 617.4 111.3 C 626.3 111.3, 630.7 100.8, 639.6 100.8 C 648.5 100.8, 652.9 99.9, 661.8 99.9 C 670.7 99.9, 675.1 143.2, 684.0 143.2 L 684.0 144 L 40.0 144 Z" fill="url(#g1727)"/>
-<path d="M 40.0 64.9 C 48.9 64.9, 53.3 73.1, 62.2 73.1 C 71.1 73.1, 75.5 87.1, 84.4 87.1 C 93.3 87.1, 97.7 80.9, 106.6 80.9 C 115.5 80.9, 119.9 69.3, 128.8 69.3 C 137.7 69.3, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 36.2, 373.1 36.2 C 382.0 36.2, 386.4 64.7, 395.3 64.7 C 404.2 64.7, 408.6 64.2, 417.5 64.2 C 426.4 64.2, 430.8 64.1, 439.7 64.1 C 448.6 64.1, 453.0 58.8, 461.9 58.8 C 470.8 58.8, 475.3 64.6, 484.1 64.6 C 493.0 64.6, 497.5 61.4, 506.3 61.4 C 515.2 61.4, 519.7 64.8, 528.6 64.8 C 537.4 64.8, 541.9 55.3, 550.8 55.3 C 559.6 55.3, 564.1 65.0, 573.0 65.0 C 581.8 65.0, 586.3 98.3, 595.2 98.3 C 604.1 98.3, 608.5 111.3, 617.4 111.3 C 626.3 111.3, 630.7 100.8, 639.6 100.8 C 648.5 100.8, 652.9 99.9, 661.8 99.9 C 670.7 99.9, 675.1 143.2, 684.0 143.2" fill="none" stroke="#448aff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="40.0" cy="64.9" r="2.5" fill="#448aff" opacity="0.5"/>
+<path d="M 40.0 36.2 C 48.9 36.2, 53.3 47.4, 62.2 47.4 C 71.1 47.4, 75.5 66.4, 84.4 66.4 C 93.3 66.4, 97.7 58.0, 106.6 58.0 C 115.5 58.0, 119.9 42.2, 128.8 42.2 C 137.7 42.2, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 144.0, 373.1 144.0 C 382.0 144.0, 386.4 144.0, 395.3 144.0 C 404.2 144.0, 408.6 144.0, 417.5 144.0 C 426.4 144.0, 430.8 144.0, 439.7 144.0 C 448.6 144.0, 453.0 144.0, 461.9 144.0 C 470.8 144.0, 475.3 144.0, 484.1 144.0 C 493.0 144.0, 497.5 144.0, 506.3 144.0 C 515.2 144.0, 519.7 144.0, 528.6 144.0 C 537.4 144.0, 541.9 144.0, 550.8 144.0 C 559.6 144.0, 564.1 144.0, 573.0 144.0 C 581.8 144.0, 586.3 144.0, 595.2 144.0 C 604.1 144.0, 608.5 144.0, 617.4 144.0 C 626.3 144.0, 630.7 85.1, 639.6 85.1 C 648.5 85.1, 652.9 83.9, 661.8 83.9 C 670.7 83.9, 675.1 122.8, 684.0 122.8 L 684.0 144 L 40.0 144 Z" fill="url(#g6193)"/>
+<path d="M 40.0 36.2 C 48.9 36.2, 53.3 47.4, 62.2 47.4 C 71.1 47.4, 75.5 66.4, 84.4 66.4 C 93.3 66.4, 97.7 58.0, 106.6 58.0 C 115.5 58.0, 119.9 42.2, 128.8 42.2 C 137.7 42.2, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 144.0, 373.1 144.0 C 382.0 144.0, 386.4 144.0, 395.3 144.0 C 404.2 144.0, 408.6 144.0, 417.5 144.0 C 426.4 144.0, 430.8 144.0, 439.7 144.0 C 448.6 144.0, 453.0 144.0, 461.9 144.0 C 470.8 144.0, 475.3 144.0, 484.1 144.0 C 493.0 144.0, 497.5 144.0, 506.3 144.0 C 515.2 144.0, 519.7 144.0, 528.6 144.0 C 537.4 144.0, 541.9 144.0, 550.8 144.0 C 559.6 144.0, 564.1 144.0, 573.0 144.0 C 581.8 144.0, 586.3 144.0, 595.2 144.0 C 604.1 144.0, 608.5 144.0, 617.4 144.0 C 626.3 144.0, 630.7 85.1, 639.6 85.1 C 648.5 85.1, 652.9 83.9, 661.8 83.9 C 670.7 83.9, 675.1 122.8, 684.0 122.8" fill="none" stroke="#448aff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="40.0" cy="36.2" r="2.5" fill="#448aff" opacity="0.5"/>
 <circle cx="151.0" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
 <circle cx="262.1" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="373.1" cy="36.2" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="484.1" cy="64.6" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="595.2" cy="98.3" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="684.0" cy="143.2" r="4" fill="#448aff" stroke="#111" stroke-width="2"/>
+<circle cx="373.1" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
+<circle cx="484.1" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
+<circle cx="595.2" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
+<circle cx="684.0" cy="122.8" r="4" fill="#448aff" stroke="#111" stroke-width="2"/>
 <rect x="29" y="20" width="21" height="124" fill="transparent"><title>Feb 27: 10,116</title></rect>
 <rect x="51" y="20" width="21" height="124" fill="transparent"><title>Feb 28: 9,063</title></rect>
 <rect x="74" y="20" width="21" height="124" fill="transparent"><title>Mar 01: 7,276</title></rect>
@@ -521,21 +520,21 @@ h1{font-size:26px;}
 <rect x="296" y="20" width="21" height="124" fill="transparent"><title>Mar 11: 0</title></rect>
 <rect x="318" y="20" width="21" height="124" fill="transparent"><title>Mar 12: 0</title></rect>
 <rect x="340" y="20" width="21" height="124" fill="transparent"><title>Mar 13: 0</title></rect>
-<rect x="362" y="20" width="21" height="124" fill="transparent"><title>Mar 14: 13,788</title></rect>
-<rect x="385" y="20" width="21" height="124" fill="transparent"><title>Mar 15: 10,145</title></rect>
-<rect x="407" y="20" width="21" height="124" fill="transparent"><title>Mar 16: 10,201</title></rect>
-<rect x="429" y="20" width="21" height="124" fill="transparent"><title>Mar 17: 10,215</title></rect>
-<rect x="451" y="20" width="21" height="124" fill="transparent"><title>Mar 18: 10,894</title></rect>
-<rect x="473" y="20" width="21" height="124" fill="transparent"><title>Mar 19: 10,149</title></rect>
-<rect x="496" y="20" width="21" height="124" fill="transparent"><title>Mar 20: 10,556</title></rect>
-<rect x="518" y="20" width="21" height="124" fill="transparent"><title>Mar 21: 10,132</title></rect>
-<rect x="540" y="20" width="21" height="124" fill="transparent"><title>Mar 22: 11,336</title></rect>
-<rect x="562" y="20" width="21" height="124" fill="transparent"><title>Mar 23: 10,103</title></rect>
-<rect x="584" y="20" width="21" height="124" fill="transparent"><title>Mar 24: 5,844</title></rect>
-<rect x="607" y="20" width="21" height="124" fill="transparent"><title>Mar 25: 4,185</title></rect>
+<rect x="362" y="20" width="21" height="124" fill="transparent"><title>Mar 14: 0</title></rect>
+<rect x="385" y="20" width="21" height="124" fill="transparent"><title>Mar 15: 0</title></rect>
+<rect x="407" y="20" width="21" height="124" fill="transparent"><title>Mar 16: 0</title></rect>
+<rect x="429" y="20" width="21" height="124" fill="transparent"><title>Mar 17: 0</title></rect>
+<rect x="451" y="20" width="21" height="124" fill="transparent"><title>Mar 18: 0</title></rect>
+<rect x="473" y="20" width="21" height="124" fill="transparent"><title>Mar 19: 0</title></rect>
+<rect x="496" y="20" width="21" height="124" fill="transparent"><title>Mar 20: 0</title></rect>
+<rect x="518" y="20" width="21" height="124" fill="transparent"><title>Mar 21: 0</title></rect>
+<rect x="540" y="20" width="21" height="124" fill="transparent"><title>Mar 22: 0</title></rect>
+<rect x="562" y="20" width="21" height="124" fill="transparent"><title>Mar 23: 0</title></rect>
+<rect x="584" y="20" width="21" height="124" fill="transparent"><title>Mar 24: 0</title></rect>
+<rect x="607" y="20" width="21" height="124" fill="transparent"><title>Mar 25: 0</title></rect>
 <rect x="629" y="20" width="21" height="124" fill="transparent"><title>Mar 26: 5,526</title></rect>
 <rect x="651" y="20" width="21" height="124" fill="transparent"><title>Mar 27: 5,640</title></rect>
-<rect x="673" y="20" width="21" height="124" fill="transparent"><title>Mar 28: 101</title></rect>
+<rect x="673" y="20" width="21" height="124" fill="transparent"><title>Mar 28: 1,987</title></rect>
 <text x="40" y="172" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Feb 27</text>
 <text x="151" y="172" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Mar 04</text>
 <text x="262" y="172" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Mar 09</text>
@@ -553,52 +552,6 @@ h1{font-size:26px;}
 <h1>Today</h1>
 <div class="sub">Daily checklist · 13 days to Krithin's Birthday</div>
 <div class="td-date">Saturday, March 28</div>
-<div class="label">Today's Workout — Day 5 Lower</div>
-<div class="td-list">
-<div class="td-ex-wrap">
-<label class="td-item" id="td-e50">
-<input type="checkbox" onchange="tdToggle('e50',this.checked)">
-<span class="td-box"></span>
-<img src="gifs/leg_press.gif" alt="Leg Press (Legs)" class="ex-gif td-gif" loading="lazy">
-<a href="https://www.youtube.com/watch?v=IZxyjW7MPJQ" target="_blank" class="td-text td-ex">Leg Press <span class="td-muscle">Legs</span></a>
-</label></div>
-<div class="td-ex-wrap">
-<label class="td-item" id="td-e51">
-<input type="checkbox" onchange="tdToggle('e51',this.checked)">
-<span class="td-box"></span>
-<img src="gifs/leg_extensions.gif" alt="Leg Extensions (Quads)" class="ex-gif td-gif" loading="lazy">
-<a href="https://www.youtube.com/watch?v=yQ3J0I9DJPQ" target="_blank" class="td-text td-ex">Leg Extensions <span class="td-muscle">Quads</span></a>
-</label></div>
-<div class="td-ex-wrap">
-<label class="td-item" id="td-e52">
-<input type="checkbox" onchange="tdToggle('e52',this.checked)">
-<span class="td-box"></span>
-<img src="gifs/leg_curl.gif" alt="Lying Leg Curl (Hamstrings)" class="ex-gif td-gif" loading="lazy">
-<a href="https://www.youtube.com/watch?v=zDszHA7GnLY" target="_blank" class="td-text td-ex">Lying Leg Curl <span class="td-muscle">Hamstrings</span></a>
-</label></div>
-<div class="td-ex-wrap">
-<label class="td-item" id="td-e53">
-<input type="checkbox" onchange="tdToggle('e53',this.checked)">
-<span class="td-box"></span>
-<img src="gifs/goblet_squat.gif" alt="Goblet Squat (Quads)" class="ex-gif td-gif" loading="lazy">
-<a href="https://www.youtube.com/watch?v=MeIiIdhvXT4" target="_blank" class="td-text td-ex">Goblet Squat <span class="td-muscle">Quads</span></a>
-</label></div>
-<div class="td-ex-wrap">
-<label class="td-item" id="td-e54">
-<input type="checkbox" onchange="tdToggle('e54',this.checked)">
-<span class="td-box"></span>
-<img src="gifs/hip_abduction.gif" alt="Hip Abduction/Adduction (Legs)" class="ex-gif td-gif" loading="lazy">
-<a href="https://www.youtube.com/watch?v=7pbZA7ncuq8" target="_blank" class="td-text td-ex">Hip Abduction/Adduction <span class="td-muscle">Legs</span></a>
-</label></div>
-<div class="td-ex-wrap">
-<label class="td-item" id="td-e55">
-<input type="checkbox" onchange="tdToggle('e55',this.checked)">
-<span class="td-box"></span>
-<img src="gifs/calf_raises.gif" alt="Calf Raises (Calves)" class="ex-gif td-gif" loading="lazy">
-<a href="https://www.youtube.com/watch?v=ix9LRCNb38U" target="_blank" class="td-text td-ex">Calf Raises <span class="td-muscle">Calves</span></a>
-</label></div>
-</div>
-<div class="label" style="margin-top:18px;">Daily Goals</div>
 <div class="td-progress">
 <div class="td-bar"><div class="td-fill" id="td-fill" style="width:0%;"></div></div>
 <span class="td-count" id="td-count">0/6</span>
@@ -607,7 +560,7 @@ h1{font-size:26px;}
 <label class="td-item" id="td-gym">
 <input type="checkbox"  onchange="tdToggle('gym',this.checked)">
 <span class="td-box"></span>
-<span class="td-text">Day 5 — Lower Workout</span>
+<span class="td-text">Day 2 — Lower Workout</span>
 </label>
 <label class="td-item" id="td-food">
 <input type="checkbox"  onchange="tdToggle('food',this.checked)">
@@ -622,7 +575,7 @@ h1{font-size:26px;}
 <label class="td-item" id="td-steps">
 <input type="checkbox"  onchange="tdToggle('steps',this.checked)">
 <span class="td-box"></span>
-<span class="td-text">Walk 5,000+ steps (now: 101)</span>
+<span class="td-text">Walk 5,000+ steps (now: 1,987)</span>
 </label>
 <label class="td-item" id="td-premeal">
 <input type="checkbox"  onchange="tdToggle('premeal',this.checked)">
@@ -634,6 +587,58 @@ h1{font-size:26px;}
 <span class="td-box"></span>
 <span class="td-text">Sleep 7-8 hours tonight</span>
 </label>
+</div>
+<div class="label">Today's Workout — Day 2 Lower</div>
+<div class="td-list">
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el0">
+<input type="checkbox" onchange="tdToggle('el0',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/bodyweight_squats.gif" alt="Bodyweight Squats (Quads)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=Ul2idJKmpAc" target="_blank" class="td-text td-ex">Bodyweight Squats <span class="td-muscle">Quads</span></a>
+</label></div>
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el1">
+<input type="checkbox" onchange="tdToggle('el1',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/smith_machine_squats.gif" alt="Smith Machine Narrow Squats (Quads)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=OCEEP5Xidq8" target="_blank" class="td-text td-ex">Smith Machine Narrow Squats <span class="td-muscle">Quads</span></a>
+</label></div>
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el2">
+<input type="checkbox" onchange="tdToggle('el2',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/barbell_deadlift.gif" alt="Barbell Deadlift (Hamstrings)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=k7IrL7qmBAw" target="_blank" class="td-text td-ex">Barbell Deadlift <span class="td-muscle">Hamstrings</span></a>
+</label></div>
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el3">
+<input type="checkbox" onchange="tdToggle('el3',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/leg_extensions.gif" alt="Leg Extensions (Quads)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=yQ3J0I9DJPQ" target="_blank" class="td-text td-ex">Leg Extensions <span class="td-muscle">Quads</span></a>
+</label></div>
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el4">
+<input type="checkbox" onchange="tdToggle('el4',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/leg_curl.gif" alt="Leg Curl Machine (Hamstrings)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=zDszHA7GnLY" target="_blank" class="td-text td-ex">Leg Curl Machine <span class="td-muscle">Hamstrings</span></a>
+</label></div>
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el5">
+<input type="checkbox" onchange="tdToggle('el5',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/db_bridges.gif" alt="Dumbbell Bridges (Glutes)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=Q-eQhhr9oYA" target="_blank" class="td-text td-ex">Dumbbell Bridges <span class="td-muscle">Glutes</span></a>
+</label></div>
+<div class="td-ex-wrap">
+<label class="td-item" id="td-el6">
+<input type="checkbox" onchange="tdToggle('el6',this.checked)">
+<span class="td-box"></span>
+<img src="gifs/calf_raises.gif" alt="Calf Raises (Calves)" class="ex-gif td-gif" loading="lazy">
+<a href="https://www.youtube.com/watch?v=ix9LRCNb38U" target="_blank" class="td-text td-ex">Calf Raises <span class="td-muscle">Calves</span></a>
+</label></div>
 </div>
 <div class="note">Auto-checked from your logs · Tap to strike off exercises · Resets daily</div>
 </div>
@@ -659,43 +664,43 @@ h1{font-size:26px;}
 <div class="cr-hero-label">WEIGHT</div>
 <div class="cr-hero-sub">from 71.2 kg <span class="cr-badge up">-0.6</span></div>
 <div class="cr-progress"><div class="cr-progress-fill" style="width:48%;background:linear-gradient(90deg,#448aff,#ffd740);"></div></div>
-<div class="cr-progress-text">2.6 kg from 68 kg soft target</div>
+<div class="cr-progress-text">2.6 kg to 68 kg goal</div>
 </div>
 <div class="cr-hero-card">
-<div class="cr-hero-num" style="--ac:var(--blue);">1</div>
+<div class="cr-hero-num" style="--ac:var(--blue);">0</div>
 <div class="cr-hero-label">GYM SESSIONS</div>
-<div class="cr-hero-sub">was 4 <span class="cr-badge dn">-3</span></div>
+<div class="cr-hero-sub">was 0 <span class="cr-badge neutral">0</span></div>
 </div>
 </div>
 
 <div class="cr-metrics">
 <div class="cr-metric">
-<div class="cr-metric-val">4,259</div>
+<div class="cr-metric-val">2,630</div>
 <div class="cr-metric-label">AVG STEPS</div>
-<div class="cr-metric-prev">was 10,483 <span class="cr-badge dn">-6,224</span></div>
+<div class="cr-metric-prev">was 0 <span class="cr-badge up">+2,630</span></div>
 </div>
 <div class="cr-metric">
-<div class="cr-metric-val">21,296</div>
+<div class="cr-metric-val">13,153</div>
 <div class="cr-metric-label">TOTAL STEPS</div>
-<div class="cr-metric-prev">was 73,385 <span class="cr-badge dn">-52,089</span></div>
+<div class="cr-metric-prev">was 0 <span class="cr-badge up">+13,153</span></div>
 </div>
 <div class="cr-metric">
-<div class="cr-metric-val">6h 37m</div>
+<div class="cr-metric-val">7h 12m</div>
 <div class="cr-metric-label">AVG SLEEP</div>
-<div class="cr-metric-prev">was 7h 08m <span class="cr-badge dn">-31m</span></div>
+<div class="cr-metric-prev">was — <span class="cr-badge up">+432m</span></div>
 </div>
 </div>
 
 <div class="cr-block">
 <div class="cr-block-title">Body Measurements</div>
-<div class="cr-block-sub">2026-03-17 → 2026-03-24</div>
+<div class="cr-block-sub">2026-02-24 → 2026-03-03</div>
 <div class="cr-mhead"><span class="cr-ml"></span><span class="cr-mp">Before</span><span class="cr-mc">Now</span><span class="cr-md">Change</span></div>
-<div class="cr-mrow cr-m-good"><span class="cr-ml">Weight</span><span class="cr-mp">71</span><span class="cr-mc">70.6</span><span class="cr-md" style="color:#00e676;">-0.4</span></div>
-<div class="cr-mrow cr-m-good"><span class="cr-ml">Waist</span><span class="cr-mp">36</span><span class="cr-mc">35</span><span class="cr-md" style="color:#00e676;">-1.0</span></div>
-<div class="cr-mrow cr-m-good"><span class="cr-ml">Chest</span><span class="cr-mp">35</span><span class="cr-mc">37.5</span><span class="cr-md" style="color:#00e676;">+2.5</span></div>
-<div class="cr-mrow"><span class="cr-ml">Arms</span><span class="cr-mp">12</span><span class="cr-mc">12</span><span class="cr-md" style="color:#666;">+0.0</span></div>
-<div class="cr-mrow cr-m-good"><span class="cr-ml">Quads</span><span class="cr-mp">18</span><span class="cr-mc">19</span><span class="cr-md" style="color:#00e676;">+1.0</span></div>
-<div class="cr-mrow cr-m-good"><span class="cr-ml">Hip</span><span class="cr-mp">38</span><span class="cr-mc">37.5</span><span class="cr-md" style="color:#00e676;">-0.5</span></div>
+<div class="cr-mrow cr-m-good"><span class="cr-ml">Weight</span><span class="cr-mp">73.2</span><span class="cr-mc">71.8</span><span class="cr-md" style="color:#00e676;">-1.4</span></div>
+<div class="cr-mrow"><span class="cr-ml">Waist</span><span class="cr-mp">36</span><span class="cr-mc">36</span><span class="cr-md" style="color:#666;">+0.0</span></div>
+<div class="cr-mrow cr-m-good"><span class="cr-ml">Chest</span><span class="cr-mp">37</span><span class="cr-mc">37.25</span><span class="cr-md" style="color:#00e676;">+0.2</span></div>
+<div class="cr-mrow cr-m-good"><span class="cr-ml">Arms</span><span class="cr-mp">12.2</span><span class="cr-mc">12.25</span><span class="cr-md" style="color:#00e676;">+0.1</span></div>
+<div class="cr-mrow cr-m-good"><span class="cr-ml">Quads</span><span class="cr-mp">18.2</span><span class="cr-mc">19.25</span><span class="cr-md" style="color:#00e676;">+1.1</span></div>
+<div class="cr-mrow"><span class="cr-ml">Hip</span><span class="cr-mp">39</span><span class="cr-mc">39.25</span><span class="cr-md" style="color:#ff5252;">+0.2</span></div>
 
 </div>
 
@@ -707,12 +712,30 @@ h1{font-size:26px;}
 <h1>Gym Log</h1>
 <div class="sub">Dot-matrix calendar + session history</div>
 
-<div class="cal-wrap">
-<div class="cal-title">March 2026</div>
-<div class="cal-grid">
-<span class="cal-hdr">M</span><span class="cal-hdr">T</span><span class="cal-hdr">W</span><span class="cal-hdr">T</span><span class="cal-hdr">F</span><span class="cal-hdr">S</span><span class="cal-hdr">S</span>
-<span class="cal-cell empty"></span><span class="cal-cell empty"></span><span class="cal-cell empty"></span><span class="cal-cell empty"></span><span class="cal-cell empty"></span><span class="cal-cell empty"></span><span class="cal-cell gym" style="--gc:#00e676;">1<em>L</em></span><span class="cal-cell gym" style="--gc:#448aff;">2<em>U</em></span><span class="cal-cell gym" style="--gc:#00e676;">3<em>L</em></span><span class="cal-cell gym" style="--gc:#448aff;">4<em>U</em></span><span class="cal-cell rest">5</span><span class="cal-cell rest">6</span><span class="cal-cell gym" style="--gc:#448aff;">7<em>U</em></span><span class="cal-cell gym" style="--gc:#00e676;">8<em>L</em></span><span class="cal-cell rest">9</span><span class="cal-cell gym" style="--gc:#00e676;">10<em>L</em></span><span class="cal-cell gym" style="--gc:#448aff;">11<em>U</em></span><span class="cal-cell gym" style="--gc:#b388ff;">12<em>Pl</em></span><span class="cal-cell rest">13</span><span class="cal-cell gym" style="--gc:#00e676;">14<em>L</em></span><span class="cal-cell rest">15</span><span class="cal-cell gym" style="--gc:#ffd740;">16<em>F</em></span><span class="cal-cell rest">17</span><span class="cal-cell gym" style="--gc:#00e676;">18<em>L</em></span><span class="cal-cell gym" style="--gc:#448aff;">19<em>Pu</em></span><span class="cal-cell gym" style="--gc:#b388ff;">20<em>Pl</em></span><span class="cal-cell rest">21</span><span class="cal-cell rest">22</span><span class="cal-cell gym" style="--gc:#00e676;">23<em>L</em></span><span class="cal-cell gym" style="--gc:#ffd740;">24<em>F</em></span><span class="cal-cell rest">25</span><span class="cal-cell rest">26</span><span class="cal-cell rest">27</span><span class="cal-cell today">28</span><span class="cal-cell future">29</span><span class="cal-cell future">30</span><span class="cal-cell future">31</span>
+<div class="dot-cal">
+<div class="dot-month"><div class="dot-label">Jan</div><div class="dot-grid">
+<span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot empty"></span>
 </div></div>
+<div class="dot-month"><div class="dot-label">Feb</div><div class="dot-grid">
+<span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot gym" style="background:#448aff;box-shadow:0 0 6px #448aff;"></span><span class="dot empty"></span>
+</div></div>
+<div class="dot-month"><div class="dot-label">Mar</div><div class="dot-grid">
+<span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot gym" style="background:#00e676;box-shadow:0 0 6px #00e676;"></span>
+<span class="dot gym" style="background:#448aff;box-shadow:0 0 6px #448aff;"></span><span class="dot gym" style="background:#00e676;box-shadow:0 0 6px #00e676;"></span><span class="dot gym" style="background:#448aff;box-shadow:0 0 6px #448aff;"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span>
+<span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot rest"></span><span class="dot today"></span><span class="dot future"></span>
+<span class="dot future"></span><span class="dot future"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span><span class="dot empty"></span>
+</div></div>
+</div>
 <div class="dot-legend">
 <span><i style="background:#448aff;"></i>Upper</span>
 <span><i style="background:#00e676;"></i>Lower</span>
@@ -721,18 +744,11 @@ h1{font-size:26px;}
 </div>
 
 <div class="label">Session History</div>
-<div class="log-r"><span class="log-d" style="background:#ffd740;"></span><span class="log-t">Tue, Mar 24</span><span class="log-m">Day 4 — Full</span></div>
-<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Mon, Mar 23</span><span class="log-m">Day 3 — Lower</span></div>
-<div class="log-r"><span class="log-d" style="background:#b388ff;"></span><span class="log-t">Fri, Mar 20</span><span class="log-m">Day 2 — Pull</span></div>
-<div class="log-r"><span class="log-d" style="background:#448aff;"></span><span class="log-t">Thu, Mar 19</span><span class="log-m">Day 1 — Push</span></div>
-<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Wed, Mar 18</span><span class="log-m">Day 5 — Lower</span></div>
-<div class="log-r"><span class="log-d" style="background:#ffd740;"></span><span class="log-t">Mon, Mar 16</span><span class="log-m">Day 4 — Full</span></div>
-<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Sat, Mar 14</span><span class="log-m">Day 3 — Lower</span></div>
-<div class="log-r"><span class="log-d" style="background:#b388ff;"></span><span class="log-t">Thu, Mar 12</span><span class="log-m">Day 2 — Pull</span></div>
-<div class="log-r"><span class="log-d" style="background:#448aff;"></span><span class="log-t">Wed, Mar 11</span><span class="log-m">Day 1 — Upper</span></div>
-<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Tue, Mar 10</span><span class="log-m">Day 4 — Lower</span></div>
-<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Sun, Mar 08</span><span class="log-m">Day 3 — Lower</span></div>
-<div class="log-r"><span class="log-d" style="background:#448aff;"></span><span class="log-t">Sat, Mar 07</span><span class="log-m">Day 2 — Upper</span></div>
+<div class="log-r"><span class="log-d" style="background:#448aff;"></span><span class="log-t">Wed, Mar 04</span><span class="log-m">Day 1 — Upper</span></div>
+<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Tue, Mar 03</span><span class="log-m">Day 4 — Lower</span></div>
+<div class="log-r"><span class="log-d" style="background:#448aff;"></span><span class="log-t">Mon, Mar 02</span><span class="log-m">Day 3 — Upper</span></div>
+<div class="log-r"><span class="log-d" style="background:#00e676;"></span><span class="log-t">Sun, Mar 01</span><span class="log-m">Day 2 — Lower</span></div>
+<div class="log-r"><span class="log-d" style="background:#448aff;"></span><span class="log-t">Sat, Feb 28</span><span class="log-m">Day 1 — Upper</span></div>
 
 </div>
 
@@ -746,30 +762,30 @@ h1{font-size:26px;}
 <div class="chart-legend"><span><i style="background:var(--blue);"></i>Steps</span><span style="color:var(--green);opacity:0.6;">--- 5K target</span></div>
 <svg viewBox="0 0 700 180" style="width:100%;display:block;">
 <defs>
-<linearGradient id="g1727" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="g6193" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0%" stop-color="#448aff" stop-opacity="0.3"/>
 <stop offset="100%" stop-color="#448aff" stop-opacity="0.02"/>
 </linearGradient>
 </defs>
 <line x1="40" y1="113" x2="684" y2="113" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="116" fill="#444" font-size="10" text-anchor="end" font-family="Inter">4k</text>
+<text x="34" y="116" fill="#444" font-size="10" text-anchor="end" font-family="Inter">3k</text>
 <line x1="40" y1="82" x2="684" y2="82" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="85" fill="#444" font-size="10" text-anchor="end" font-family="Inter">8k</text>
+<text x="34" y="85" fill="#444" font-size="10" text-anchor="end" font-family="Inter">6k</text>
 <line x1="40" y1="51" x2="684" y2="51" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="54" fill="#444" font-size="10" text-anchor="end" font-family="Inter">12k</text>
+<text x="34" y="54" fill="#444" font-size="10" text-anchor="end" font-family="Inter">9k</text>
 <line x1="40" y1="20" x2="684" y2="20" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">16k</text>
-<line x1="40" y1="105" x2="684" y2="105" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+<text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">12k</text>
+<line x1="40" y1="91" x2="684" y2="91" stroke="#00e676" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
 
-<path d="M 40.0 64.9 C 48.9 64.9, 53.3 73.1, 62.2 73.1 C 71.1 73.1, 75.5 87.1, 84.4 87.1 C 93.3 87.1, 97.7 80.9, 106.6 80.9 C 115.5 80.9, 119.9 69.3, 128.8 69.3 C 137.7 69.3, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 36.2, 373.1 36.2 C 382.0 36.2, 386.4 64.7, 395.3 64.7 C 404.2 64.7, 408.6 64.2, 417.5 64.2 C 426.4 64.2, 430.8 64.1, 439.7 64.1 C 448.6 64.1, 453.0 58.8, 461.9 58.8 C 470.8 58.8, 475.3 64.6, 484.1 64.6 C 493.0 64.6, 497.5 61.4, 506.3 61.4 C 515.2 61.4, 519.7 64.8, 528.6 64.8 C 537.4 64.8, 541.9 55.3, 550.8 55.3 C 559.6 55.3, 564.1 65.0, 573.0 65.0 C 581.8 65.0, 586.3 98.3, 595.2 98.3 C 604.1 98.3, 608.5 111.3, 617.4 111.3 C 626.3 111.3, 630.7 100.8, 639.6 100.8 C 648.5 100.8, 652.9 99.9, 661.8 99.9 C 670.7 99.9, 675.1 143.2, 684.0 143.2 L 684.0 144 L 40.0 144 Z" fill="url(#g1727)"/>
-<path d="M 40.0 64.9 C 48.9 64.9, 53.3 73.1, 62.2 73.1 C 71.1 73.1, 75.5 87.1, 84.4 87.1 C 93.3 87.1, 97.7 80.9, 106.6 80.9 C 115.5 80.9, 119.9 69.3, 128.8 69.3 C 137.7 69.3, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 36.2, 373.1 36.2 C 382.0 36.2, 386.4 64.7, 395.3 64.7 C 404.2 64.7, 408.6 64.2, 417.5 64.2 C 426.4 64.2, 430.8 64.1, 439.7 64.1 C 448.6 64.1, 453.0 58.8, 461.9 58.8 C 470.8 58.8, 475.3 64.6, 484.1 64.6 C 493.0 64.6, 497.5 61.4, 506.3 61.4 C 515.2 61.4, 519.7 64.8, 528.6 64.8 C 537.4 64.8, 541.9 55.3, 550.8 55.3 C 559.6 55.3, 564.1 65.0, 573.0 65.0 C 581.8 65.0, 586.3 98.3, 595.2 98.3 C 604.1 98.3, 608.5 111.3, 617.4 111.3 C 626.3 111.3, 630.7 100.8, 639.6 100.8 C 648.5 100.8, 652.9 99.9, 661.8 99.9 C 670.7 99.9, 675.1 143.2, 684.0 143.2" fill="none" stroke="#448aff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="40.0" cy="64.9" r="2.5" fill="#448aff" opacity="0.5"/>
+<path d="M 40.0 36.2 C 48.9 36.2, 53.3 47.4, 62.2 47.4 C 71.1 47.4, 75.5 66.4, 84.4 66.4 C 93.3 66.4, 97.7 58.0, 106.6 58.0 C 115.5 58.0, 119.9 42.2, 128.8 42.2 C 137.7 42.2, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 144.0, 373.1 144.0 C 382.0 144.0, 386.4 144.0, 395.3 144.0 C 404.2 144.0, 408.6 144.0, 417.5 144.0 C 426.4 144.0, 430.8 144.0, 439.7 144.0 C 448.6 144.0, 453.0 144.0, 461.9 144.0 C 470.8 144.0, 475.3 144.0, 484.1 144.0 C 493.0 144.0, 497.5 144.0, 506.3 144.0 C 515.2 144.0, 519.7 144.0, 528.6 144.0 C 537.4 144.0, 541.9 144.0, 550.8 144.0 C 559.6 144.0, 564.1 144.0, 573.0 144.0 C 581.8 144.0, 586.3 144.0, 595.2 144.0 C 604.1 144.0, 608.5 144.0, 617.4 144.0 C 626.3 144.0, 630.7 85.1, 639.6 85.1 C 648.5 85.1, 652.9 83.9, 661.8 83.9 C 670.7 83.9, 675.1 122.8, 684.0 122.8 L 684.0 144 L 40.0 144 Z" fill="url(#g6193)"/>
+<path d="M 40.0 36.2 C 48.9 36.2, 53.3 47.4, 62.2 47.4 C 71.1 47.4, 75.5 66.4, 84.4 66.4 C 93.3 66.4, 97.7 58.0, 106.6 58.0 C 115.5 58.0, 119.9 42.2, 128.8 42.2 C 137.7 42.2, 142.2 144.0, 151.0 144.0 C 159.9 144.0, 164.4 144.0, 173.2 144.0 C 182.1 144.0, 186.6 144.0, 195.4 144.0 C 204.3 144.0, 208.8 144.0, 217.7 144.0 C 226.5 144.0, 231.0 144.0, 239.9 144.0 C 248.7 144.0, 253.2 144.0, 262.1 144.0 C 271.0 144.0, 275.4 144.0, 284.3 144.0 C 293.2 144.0, 297.6 144.0, 306.5 144.0 C 315.4 144.0, 319.8 144.0, 328.7 144.0 C 337.6 144.0, 342.0 144.0, 350.9 144.0 C 359.8 144.0, 364.2 144.0, 373.1 144.0 C 382.0 144.0, 386.4 144.0, 395.3 144.0 C 404.2 144.0, 408.6 144.0, 417.5 144.0 C 426.4 144.0, 430.8 144.0, 439.7 144.0 C 448.6 144.0, 453.0 144.0, 461.9 144.0 C 470.8 144.0, 475.3 144.0, 484.1 144.0 C 493.0 144.0, 497.5 144.0, 506.3 144.0 C 515.2 144.0, 519.7 144.0, 528.6 144.0 C 537.4 144.0, 541.9 144.0, 550.8 144.0 C 559.6 144.0, 564.1 144.0, 573.0 144.0 C 581.8 144.0, 586.3 144.0, 595.2 144.0 C 604.1 144.0, 608.5 144.0, 617.4 144.0 C 626.3 144.0, 630.7 85.1, 639.6 85.1 C 648.5 85.1, 652.9 83.9, 661.8 83.9 C 670.7 83.9, 675.1 122.8, 684.0 122.8" fill="none" stroke="#448aff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="40.0" cy="36.2" r="2.5" fill="#448aff" opacity="0.5"/>
 <circle cx="151.0" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
 <circle cx="262.1" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="373.1" cy="36.2" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="484.1" cy="64.6" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="595.2" cy="98.3" r="2.5" fill="#448aff" opacity="0.5"/>
-<circle cx="684.0" cy="143.2" r="4" fill="#448aff" stroke="#111" stroke-width="2"/>
+<circle cx="373.1" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
+<circle cx="484.1" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
+<circle cx="595.2" cy="144.0" r="2.5" fill="#448aff" opacity="0.5"/>
+<circle cx="684.0" cy="122.8" r="4" fill="#448aff" stroke="#111" stroke-width="2"/>
 <rect x="29" y="20" width="21" height="124" fill="transparent"><title>Feb 27: 10,116</title></rect>
 <rect x="51" y="20" width="21" height="124" fill="transparent"><title>Feb 28: 9,063</title></rect>
 <rect x="74" y="20" width="21" height="124" fill="transparent"><title>Mar 01: 7,276</title></rect>
@@ -785,21 +801,21 @@ h1{font-size:26px;}
 <rect x="296" y="20" width="21" height="124" fill="transparent"><title>Mar 11: 0</title></rect>
 <rect x="318" y="20" width="21" height="124" fill="transparent"><title>Mar 12: 0</title></rect>
 <rect x="340" y="20" width="21" height="124" fill="transparent"><title>Mar 13: 0</title></rect>
-<rect x="362" y="20" width="21" height="124" fill="transparent"><title>Mar 14: 13,788</title></rect>
-<rect x="385" y="20" width="21" height="124" fill="transparent"><title>Mar 15: 10,145</title></rect>
-<rect x="407" y="20" width="21" height="124" fill="transparent"><title>Mar 16: 10,201</title></rect>
-<rect x="429" y="20" width="21" height="124" fill="transparent"><title>Mar 17: 10,215</title></rect>
-<rect x="451" y="20" width="21" height="124" fill="transparent"><title>Mar 18: 10,894</title></rect>
-<rect x="473" y="20" width="21" height="124" fill="transparent"><title>Mar 19: 10,149</title></rect>
-<rect x="496" y="20" width="21" height="124" fill="transparent"><title>Mar 20: 10,556</title></rect>
-<rect x="518" y="20" width="21" height="124" fill="transparent"><title>Mar 21: 10,132</title></rect>
-<rect x="540" y="20" width="21" height="124" fill="transparent"><title>Mar 22: 11,336</title></rect>
-<rect x="562" y="20" width="21" height="124" fill="transparent"><title>Mar 23: 10,103</title></rect>
-<rect x="584" y="20" width="21" height="124" fill="transparent"><title>Mar 24: 5,844</title></rect>
-<rect x="607" y="20" width="21" height="124" fill="transparent"><title>Mar 25: 4,185</title></rect>
+<rect x="362" y="20" width="21" height="124" fill="transparent"><title>Mar 14: 0</title></rect>
+<rect x="385" y="20" width="21" height="124" fill="transparent"><title>Mar 15: 0</title></rect>
+<rect x="407" y="20" width="21" height="124" fill="transparent"><title>Mar 16: 0</title></rect>
+<rect x="429" y="20" width="21" height="124" fill="transparent"><title>Mar 17: 0</title></rect>
+<rect x="451" y="20" width="21" height="124" fill="transparent"><title>Mar 18: 0</title></rect>
+<rect x="473" y="20" width="21" height="124" fill="transparent"><title>Mar 19: 0</title></rect>
+<rect x="496" y="20" width="21" height="124" fill="transparent"><title>Mar 20: 0</title></rect>
+<rect x="518" y="20" width="21" height="124" fill="transparent"><title>Mar 21: 0</title></rect>
+<rect x="540" y="20" width="21" height="124" fill="transparent"><title>Mar 22: 0</title></rect>
+<rect x="562" y="20" width="21" height="124" fill="transparent"><title>Mar 23: 0</title></rect>
+<rect x="584" y="20" width="21" height="124" fill="transparent"><title>Mar 24: 0</title></rect>
+<rect x="607" y="20" width="21" height="124" fill="transparent"><title>Mar 25: 0</title></rect>
 <rect x="629" y="20" width="21" height="124" fill="transparent"><title>Mar 26: 5,526</title></rect>
 <rect x="651" y="20" width="21" height="124" fill="transparent"><title>Mar 27: 5,640</title></rect>
-<rect x="673" y="20" width="21" height="124" fill="transparent"><title>Mar 28: 101</title></rect>
+<rect x="673" y="20" width="21" height="124" fill="transparent"><title>Mar 28: 1,987</title></rect>
 <text x="40" y="172" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Feb 27</text>
 <text x="151" y="172" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Mar 04</text>
 <text x="262" y="172" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Mar 09</text>
@@ -816,29 +832,29 @@ h1{font-size:26px;}
 <div class="chart-legend"><span><i style="background:var(--purple);"></i>Sleep</span><span style="color:var(--purple);opacity:0.6;">--- 7h target</span></div>
 <svg viewBox="0 0 700 150" style="width:100%;display:block;">
 <defs>
-<linearGradient id="g6148" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="g7931" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0%" stop-color="#b388ff" stop-opacity="0.3"/>
 <stop offset="100%" stop-color="#b388ff" stop-opacity="0.02"/>
 </linearGradient>
 </defs>
 <line x1="40" y1="90" x2="684" y2="90" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="94" fill="#444" font-size="10" text-anchor="end" font-family="Inter">149</text>
+<text x="34" y="94" fill="#444" font-size="10" text-anchor="end" font-family="Inter">142</text>
 <line x1="40" y1="67" x2="684" y2="67" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="70" fill="#444" font-size="10" text-anchor="end" font-family="Inter">298</text>
+<text x="34" y="70" fill="#444" font-size="10" text-anchor="end" font-family="Inter">285</text>
 <line x1="40" y1="44" x2="684" y2="44" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="46" fill="#444" font-size="10" text-anchor="end" font-family="Inter">447</text>
+<text x="34" y="46" fill="#444" font-size="10" text-anchor="end" font-family="Inter">428</text>
 <line x1="40" y1="20" x2="684" y2="20" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-<text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">596</text>
-<line x1="40" y1="48" x2="684" y2="48" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
+<text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">571</text>
+<line x1="40" y1="45" x2="684" y2="45" stroke="#b388ff" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
 
-<path d="M 40.0 60.8 C 48.9 60.8, 53.3 35.7, 62.2 35.7 C 71.1 35.7, 75.5 49.1, 84.4 49.1 C 93.3 49.1, 97.7 37.6, 106.6 37.6 C 115.5 37.6, 119.9 45.3, 128.8 45.3 C 137.7 45.3, 142.2 114.0, 151.0 114.0 C 159.9 114.0, 164.4 114.0, 173.2 114.0 C 182.1 114.0, 186.6 114.0, 195.4 114.0 C 204.3 114.0, 208.8 114.0, 217.7 114.0 C 226.5 114.0, 231.0 114.0, 239.9 114.0 C 248.7 114.0, 253.2 114.0, 262.1 114.0 C 271.0 114.0, 275.4 114.0, 284.3 114.0 C 293.2 114.0, 297.6 114.0, 306.5 114.0 C 315.4 114.0, 319.8 114.0, 328.7 114.0 C 337.6 114.0, 342.0 114.0, 350.9 114.0 C 359.8 114.0, 364.2 32.3, 373.1 32.3 C 382.0 32.3, 386.4 42.2, 395.3 42.2 C 404.2 42.2, 408.6 57.1, 417.5 57.1 C 426.4 57.1, 430.8 49.0, 439.7 49.0 C 448.6 49.0, 453.0 37.6, 461.9 37.6 C 470.8 37.6, 475.3 46.0, 484.1 46.0 C 493.0 46.0, 497.5 51.2, 506.3 51.2 C 515.2 51.2, 519.7 47.1, 528.6 47.1 C 537.4 47.1, 541.9 37.9, 550.8 37.9 C 559.6 37.9, 564.1 56.5, 573.0 56.5 C 581.8 56.5, 586.3 49.9, 595.2 49.9 C 604.1 49.9, 608.5 114.0, 617.4 114.0 C 626.3 114.0, 630.7 53.7, 639.6 53.7 C 648.5 53.7, 652.9 50.7, 661.8 50.7 C 670.7 50.7, 675.1 114.0, 684.0 114.0 L 684.0 114 L 40.0 114 Z" fill="url(#g6148)"/>
-<path d="M 40.0 60.8 C 48.9 60.8, 53.3 35.7, 62.2 35.7 C 71.1 35.7, 75.5 49.1, 84.4 49.1 C 93.3 49.1, 97.7 37.6, 106.6 37.6 C 115.5 37.6, 119.9 45.3, 128.8 45.3 C 137.7 45.3, 142.2 114.0, 151.0 114.0 C 159.9 114.0, 164.4 114.0, 173.2 114.0 C 182.1 114.0, 186.6 114.0, 195.4 114.0 C 204.3 114.0, 208.8 114.0, 217.7 114.0 C 226.5 114.0, 231.0 114.0, 239.9 114.0 C 248.7 114.0, 253.2 114.0, 262.1 114.0 C 271.0 114.0, 275.4 114.0, 284.3 114.0 C 293.2 114.0, 297.6 114.0, 306.5 114.0 C 315.4 114.0, 319.8 114.0, 328.7 114.0 C 337.6 114.0, 342.0 114.0, 350.9 114.0 C 359.8 114.0, 364.2 32.3, 373.1 32.3 C 382.0 32.3, 386.4 42.2, 395.3 42.2 C 404.2 42.2, 408.6 57.1, 417.5 57.1 C 426.4 57.1, 430.8 49.0, 439.7 49.0 C 448.6 49.0, 453.0 37.6, 461.9 37.6 C 470.8 37.6, 475.3 46.0, 484.1 46.0 C 493.0 46.0, 497.5 51.2, 506.3 51.2 C 515.2 51.2, 519.7 47.1, 528.6 47.1 C 537.4 47.1, 541.9 37.9, 550.8 37.9 C 559.6 37.9, 564.1 56.5, 573.0 56.5 C 581.8 56.5, 586.3 49.9, 595.2 49.9 C 604.1 49.9, 608.5 114.0, 617.4 114.0 C 626.3 114.0, 630.7 53.7, 639.6 53.7 C 648.5 53.7, 652.9 50.7, 661.8 50.7 C 670.7 50.7, 675.1 114.0, 684.0 114.0" fill="none" stroke="#b388ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="40.0" cy="60.8" r="2.5" fill="#b388ff" opacity="0.5"/>
+<path d="M 40.0 58.4 C 48.9 58.4, 53.3 32.3, 62.2 32.3 C 71.1 32.3, 75.5 46.2, 84.4 46.2 C 93.3 46.2, 97.7 34.2, 106.6 34.2 C 115.5 34.2, 119.9 42.3, 128.8 42.3 C 137.7 42.3, 142.2 114.0, 151.0 114.0 C 159.9 114.0, 164.4 114.0, 173.2 114.0 C 182.1 114.0, 186.6 114.0, 195.4 114.0 C 204.3 114.0, 208.8 114.0, 217.7 114.0 C 226.5 114.0, 231.0 114.0, 239.9 114.0 C 248.7 114.0, 253.2 114.0, 262.1 114.0 C 271.0 114.0, 275.4 114.0, 284.3 114.0 C 293.2 114.0, 297.6 114.0, 306.5 114.0 C 315.4 114.0, 319.8 114.0, 328.7 114.0 C 337.6 114.0, 342.0 114.0, 350.9 114.0 C 359.8 114.0, 364.2 114.0, 373.1 114.0 C 382.0 114.0, 386.4 114.0, 395.3 114.0 C 404.2 114.0, 408.6 114.0, 417.5 114.0 C 426.4 114.0, 430.8 114.0, 439.7 114.0 C 448.6 114.0, 453.0 114.0, 461.9 114.0 C 470.8 114.0, 475.3 114.0, 484.1 114.0 C 493.0 114.0, 497.5 114.0, 506.3 114.0 C 515.2 114.0, 519.7 114.0, 528.6 114.0 C 537.4 114.0, 541.9 114.0, 550.8 114.0 C 559.6 114.0, 564.1 114.0, 573.0 114.0 C 581.8 114.0, 586.3 114.0, 595.2 114.0 C 604.1 114.0, 608.5 114.0, 617.4 114.0 C 626.3 114.0, 630.7 42.6, 639.6 42.6 C 648.5 42.6, 652.9 43.3, 661.8 43.3 C 670.7 43.3, 675.1 114.0, 684.0 114.0 L 684.0 114 L 40.0 114 Z" fill="url(#g7931)"/>
+<path d="M 40.0 58.4 C 48.9 58.4, 53.3 32.3, 62.2 32.3 C 71.1 32.3, 75.5 46.2, 84.4 46.2 C 93.3 46.2, 97.7 34.2, 106.6 34.2 C 115.5 34.2, 119.9 42.3, 128.8 42.3 C 137.7 42.3, 142.2 114.0, 151.0 114.0 C 159.9 114.0, 164.4 114.0, 173.2 114.0 C 182.1 114.0, 186.6 114.0, 195.4 114.0 C 204.3 114.0, 208.8 114.0, 217.7 114.0 C 226.5 114.0, 231.0 114.0, 239.9 114.0 C 248.7 114.0, 253.2 114.0, 262.1 114.0 C 271.0 114.0, 275.4 114.0, 284.3 114.0 C 293.2 114.0, 297.6 114.0, 306.5 114.0 C 315.4 114.0, 319.8 114.0, 328.7 114.0 C 337.6 114.0, 342.0 114.0, 350.9 114.0 C 359.8 114.0, 364.2 114.0, 373.1 114.0 C 382.0 114.0, 386.4 114.0, 395.3 114.0 C 404.2 114.0, 408.6 114.0, 417.5 114.0 C 426.4 114.0, 430.8 114.0, 439.7 114.0 C 448.6 114.0, 453.0 114.0, 461.9 114.0 C 470.8 114.0, 475.3 114.0, 484.1 114.0 C 493.0 114.0, 497.5 114.0, 506.3 114.0 C 515.2 114.0, 519.7 114.0, 528.6 114.0 C 537.4 114.0, 541.9 114.0, 550.8 114.0 C 559.6 114.0, 564.1 114.0, 573.0 114.0 C 581.8 114.0, 586.3 114.0, 595.2 114.0 C 604.1 114.0, 608.5 114.0, 617.4 114.0 C 626.3 114.0, 630.7 42.6, 639.6 42.6 C 648.5 42.6, 652.9 43.3, 661.8 43.3 C 670.7 43.3, 675.1 114.0, 684.0 114.0" fill="none" stroke="#b388ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="40.0" cy="58.4" r="2.5" fill="#b388ff" opacity="0.5"/>
 <circle cx="151.0" cy="114.0" r="2.5" fill="#b388ff" opacity="0.5"/>
 <circle cx="262.1" cy="114.0" r="2.5" fill="#b388ff" opacity="0.5"/>
-<circle cx="373.1" cy="32.3" r="2.5" fill="#b388ff" opacity="0.5"/>
-<circle cx="484.1" cy="46.0" r="2.5" fill="#b388ff" opacity="0.5"/>
-<circle cx="595.2" cy="49.9" r="2.5" fill="#b388ff" opacity="0.5"/>
+<circle cx="373.1" cy="114.0" r="2.5" fill="#b388ff" opacity="0.5"/>
+<circle cx="484.1" cy="114.0" r="2.5" fill="#b388ff" opacity="0.5"/>
+<circle cx="595.2" cy="114.0" r="2.5" fill="#b388ff" opacity="0.5"/>
 <circle cx="684.0" cy="114.0" r="4" fill="#b388ff" stroke="#111" stroke-width="2"/>
 <rect x="29" y="20" width="21" height="94" fill="transparent"><title>Feb 27: 338</title></rect>
 <rect x="51" y="20" width="21" height="94" fill="transparent"><title>Feb 28: 497</title></rect>
@@ -855,20 +871,20 @@ h1{font-size:26px;}
 <rect x="296" y="20" width="21" height="94" fill="transparent"><title>Mar 11: 0</title></rect>
 <rect x="318" y="20" width="21" height="94" fill="transparent"><title>Mar 12: 0</title></rect>
 <rect x="340" y="20" width="21" height="94" fill="transparent"><title>Mar 13: 0</title></rect>
-<rect x="362" y="20" width="21" height="94" fill="transparent"><title>Mar 14: 519</title></rect>
-<rect x="385" y="20" width="21" height="94" fill="transparent"><title>Mar 15: 456</title></rect>
-<rect x="407" y="20" width="21" height="94" fill="transparent"><title>Mar 16: 361</title></rect>
-<rect x="429" y="20" width="21" height="94" fill="transparent"><title>Mar 17: 413</title></rect>
-<rect x="451" y="20" width="21" height="94" fill="transparent"><title>Mar 18: 485</title></rect>
-<rect x="473" y="20" width="21" height="94" fill="transparent"><title>Mar 19: 432</title></rect>
-<rect x="496" y="20" width="21" height="94" fill="transparent"><title>Mar 20: 399</title></rect>
-<rect x="518" y="20" width="21" height="94" fill="transparent"><title>Mar 21: 425</title></rect>
-<rect x="540" y="20" width="21" height="94" fill="transparent"><title>Mar 22: 483</title></rect>
-<rect x="562" y="20" width="21" height="94" fill="transparent"><title>Mar 23: 365</title></rect>
-<rect x="584" y="20" width="21" height="94" fill="transparent"><title>Mar 24: 407</title></rect>
+<rect x="362" y="20" width="21" height="94" fill="transparent"><title>Mar 14: 0</title></rect>
+<rect x="385" y="20" width="21" height="94" fill="transparent"><title>Mar 15: 0</title></rect>
+<rect x="407" y="20" width="21" height="94" fill="transparent"><title>Mar 16: 0</title></rect>
+<rect x="429" y="20" width="21" height="94" fill="transparent"><title>Mar 17: 0</title></rect>
+<rect x="451" y="20" width="21" height="94" fill="transparent"><title>Mar 18: 0</title></rect>
+<rect x="473" y="20" width="21" height="94" fill="transparent"><title>Mar 19: 0</title></rect>
+<rect x="496" y="20" width="21" height="94" fill="transparent"><title>Mar 20: 0</title></rect>
+<rect x="518" y="20" width="21" height="94" fill="transparent"><title>Mar 21: 0</title></rect>
+<rect x="540" y="20" width="21" height="94" fill="transparent"><title>Mar 22: 0</title></rect>
+<rect x="562" y="20" width="21" height="94" fill="transparent"><title>Mar 23: 0</title></rect>
+<rect x="584" y="20" width="21" height="94" fill="transparent"><title>Mar 24: 0</title></rect>
 <rect x="607" y="20" width="21" height="94" fill="transparent"><title>Mar 25: 0</title></rect>
-<rect x="629" y="20" width="21" height="94" fill="transparent"><title>Mar 26: 383</title></rect>
-<rect x="651" y="20" width="21" height="94" fill="transparent"><title>Mar 27: 402</title></rect>
+<rect x="629" y="20" width="21" height="94" fill="transparent"><title>Mar 26: 434</title></rect>
+<rect x="651" y="20" width="21" height="94" fill="transparent"><title>Mar 27: 430</title></rect>
 <rect x="673" y="20" width="21" height="94" fill="transparent"><title>Mar 28: 0</title></rect>
 <text x="40" y="142" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Feb 27</text>
 <text x="151" y="142" fill="#444" font-size="10" text-anchor="middle" font-family="Inter">Mar 04</text>
@@ -929,80 +945,19 @@ h1{font-size:26px;}
 <a href="https://www.youtube.com/watch?v=VmB1G1K7v94" target="_blank" class="qr qr-link">Wed: DB Bench Press <span>5x5</span><em>Chest + Delts + Triceps</em></a>
 <a href="https://www.youtube.com/watch?v=k7IrL7qmBAw" target="_blank" class="qr qr-link">Fri: Deadlift <span>5x5</span><em>Entire posterior chain</em></a>
 <div class="qr-note">5 sets in 12-15 min · Enough to maintain muscle for months (SBS)</div></div>
-<div class="note">Training rule: keep weights HEAVY (RPE 7-9), reduce sets not weight · Sources: Stronger By Science, RP Strength, Jeff Nippard, r/fitness</div>
-</div>
-
-<!-- ═══ EXERCISES V2 ═══ -->
-<div class="page" id="ev">
-<h1>Exercises v2</h1>
-<div class="sub">Fittr 5-Day Split (Coach Nandita) — click for YouTube demo</div>
-<div class="ex-btn">
-<a href="https://www.youtube.com/watch?v=uW3-Ue07H0M" target="_blank" class="warm">Warmup</a>
-<a href="https://www.youtube.com/watch?v=u5Hr3rNUZ24" target="_blank" class="cool">Cooldown</a>
-</div>
-<div class="ex-g"><div class="ex-c" style="--ac:#448aff;"><div class="ex-t" style="color:#448aff;">Day 1 — Upper Push</div><div class="ex-row"><img src="gifs/push_ups.gif" alt="Push-ups (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=IODxDxX7oi4" target="_blank" class="ex-r"><span class="ex-n">1</span>Push-ups (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/db_incline_press.gif" alt="DB Incline Press (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=8iPEnn-ltC8" target="_blank" class="ex-r"><span class="ex-n">2</span>DB Incline Press (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/barbell_bench_press.gif" alt="Barbell Bench Press (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=gCq7ew9bPds" target="_blank" class="ex-r"><span class="ex-n">3</span>Barbell Bench Press (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/db_decline_fly.gif" alt="DB Decline Fly (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=4ahnfPhKoFo" target="_blank" class="ex-r"><span class="ex-n">4</span>DB Decline Fly (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/db_shoulder_press.gif" alt="DB Shoulder Press (Shoulders)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=fjQdQNjqS1A" target="_blank" class="ex-r"><span class="ex-n">5</span>DB Shoulder Press (Shoulders)</a></div></div>
-<div class="ex-row"><img src="gifs/lateral_raise.gif" alt="Lateral Raise (Shoulders)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=3VcKaXpzqRo" target="_blank" class="ex-r"><span class="ex-n">6</span>Lateral Raise (Shoulders)</a></div></div>
-<div class="ex-row"><img src="gifs/lying_rear_delt_raise.gif" alt="Lying Rear Delt Raise (Shoulders)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=XIJTt_Czqmc" target="_blank" class="ex-r"><span class="ex-n">7</span>Lying Rear Delt Raise (Shoulders)</a></div></div>
-<div class="ex-row"><img src="gifs/skull_crushers.gif" alt="Skull Crushers (Triceps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=FzjBUeUf1L0" target="_blank" class="ex-r"><span class="ex-n">8</span>Skull Crushers (Triceps)</a></div></div>
-<div class="ex-row"><img src="gifs/overhead_tricep_extension.gif" alt="Overhead Tricep Extension (Triceps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=YbX7Wd8jQ-Q" target="_blank" class="ex-r"><span class="ex-n">9</span>Overhead Tricep Extension (Triceps)</a></div></div>
-<div class="ex-row"><img src="gifs/plank.gif" alt="Plank (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=ASdvN_XEl_c" target="_blank" class="ex-r"><span class="ex-n">10</span>Plank (Abs)</a></div></div>
-<div class="ex-row"><img src="gifs/side_plank.gif" alt="Side Plank (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=K2VljzCC16g" target="_blank" class="ex-r"><span class="ex-n">11</span>Side Plank (Abs)</a></div></div>
-</div><div class="ex-c" style="--ac:#b388ff;"><div class="ex-t" style="color:#b388ff;">Day 2 — Upper Pull</div><div class="ex-row"><img src="gifs/pull_ups.gif" alt="Pull Ups (Lats)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=eGo4IYlbE5g" target="_blank" class="ex-r"><span class="ex-n">1</span>Pull Ups (Lats)</a></div></div>
-<div class="ex-row"><img src="gifs/seated_cable_row.gif" alt="Machine Row (Back)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=xQNrFHEMhI4" target="_blank" class="ex-r"><span class="ex-n">2</span>Machine Row (Back)</a></div></div>
-<div class="ex-row"><img src="gifs/seated_cable_row.gif" alt="Seated Cable Row (Back)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=L69miffB9tc" target="_blank" class="ex-r"><span class="ex-n">3</span>Seated Cable Row (Back)</a></div></div>
-<div class="ex-row"><img src="gifs/cable_lat_pullover.gif" alt="Cable Seated Pullover (Lats)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=X1-4VGtRf5Y" target="_blank" class="ex-r"><span class="ex-n">4</span>Cable Seated Pullover (Lats)</a></div></div>
-<div class="ex-row"><img src="gifs/lat_pulldown.gif" alt="Lat Pulldown (Lats)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=7vVrl_4ioSE" target="_blank" class="ex-r"><span class="ex-n">5</span>Lat Pulldown (Lats)</a></div></div>
-<div class="ex-row"><img src="gifs/one_arm_row.gif" alt="One Arm Row (Lats)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=pYcpY20QaE8" target="_blank" class="ex-r"><span class="ex-n">6</span>One Arm Row (Lats)</a></div></div>
-<div class="ex-row"><img src="gifs/db_pullover.gif" alt="DB Pullover (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=FK4rHfWKEac" target="_blank" class="ex-r"><span class="ex-n">7</span>DB Pullover (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/shrugs.gif" alt="Shrugs (Traps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=cJRVVxmytaM" target="_blank" class="ex-r"><span class="ex-n">8</span>Shrugs (Traps)</a></div></div>
-<div class="ex-row"><img src="gifs/bicep_curls.gif" alt="Bicep Curls (Biceps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=ykJmrZ5v0Oo" target="_blank" class="ex-r"><span class="ex-n">9</span>Bicep Curls (Biceps)</a></div></div>
-<div class="ex-row"><img src="gifs/hammer_curls.gif" alt="Hammer Curls (Biceps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=zC3nLlEvin4" target="_blank" class="ex-r"><span class="ex-n">10</span>Hammer Curls (Biceps)</a></div></div>
-<div class="ex-row"><img src="gifs/machine_leg_raises.gif" alt="Machine Leg Raises (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=hdng3Nm1x_E" target="_blank" class="ex-r"><span class="ex-n">11</span>Machine Leg Raises (Abs)</a></div></div>
-</div><div class="ex-c" style="--ac:#00e676;"><div class="ex-t" style="color:#00e676;">Day 3 — Lower</div><div class="ex-row"><img src="gifs/leg_press.gif" alt="Leg Press (Legs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=IZxyjW7MPJQ" target="_blank" class="ex-r"><span class="ex-n">1</span>Leg Press (Legs)</a></div></div>
-<div class="ex-row"><img src="gifs/leg_curl.gif" alt="Lying Leg Curl (Hamstrings)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=zDszHA7GnLY" target="_blank" class="ex-r"><span class="ex-n">2</span>Lying Leg Curl (Hamstrings)</a></div></div>
-<div class="ex-row"><img src="gifs/leg_extensions.gif" alt="Leg Extensions (Quads)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=yQ3J0I9DJPQ" target="_blank" class="ex-r"><span class="ex-n">3</span>Leg Extensions (Quads)</a></div></div>
-<div class="ex-row"><img src="gifs/goblet_squat.gif" alt="Goblet Squat (Quads)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=MeIiIdhvXT4" target="_blank" class="ex-r"><span class="ex-n">4</span>Goblet Squat (Quads)</a></div></div>
-<div class="ex-row"><img src="gifs/db_bridges.gif" alt="Glute Bridge (Glutes)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=Q-eQhhr9oYA" target="_blank" class="ex-r"><span class="ex-n">5</span>Glute Bridge (Glutes)</a></div></div>
-<div class="ex-row"><img src="gifs/hip_abduction.gif" alt="Hip Abduction/Adduction (Legs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=7pbZA7ncuq8" target="_blank" class="ex-r"><span class="ex-n">6</span>Hip Abduction/Adduction (Legs)</a></div></div>
-<div class="ex-row"><img src="gifs/calf_raises.gif" alt="Calf Raises (Calves)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=ix9LRCNb38U" target="_blank" class="ex-r"><span class="ex-n">7</span>Calf Raises (Calves)</a></div></div>
-<div class="ex-row"><img src="gifs/oblique_crunches.gif" alt="Oblique Crunches (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=dRhloYXeE3E" target="_blank" class="ex-r"><span class="ex-n">8</span>Oblique Crunches (Abs)</a></div></div>
-</div><div class="ex-c" style="--ac:#ffd740;"><div class="ex-t" style="color:#ffd740;">Day 4 — Full Upper</div><div class="ex-row"><img src="gifs/pull_ups.gif" alt="Pull Ups (Lats)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=eGo4IYlbE5g" target="_blank" class="ex-r"><span class="ex-n">1</span>Pull Ups (Lats)</a></div></div>
-<div class="ex-row"><img src="gifs/push_ups.gif" alt="Push-ups (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=IODxDxX7oi4" target="_blank" class="ex-r"><span class="ex-n">2</span>Push-ups (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/barbell_bench_press.gif" alt="Barbell Bench Press (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=gCq7ew9bPds" target="_blank" class="ex-r"><span class="ex-n">3</span>Barbell Bench Press (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/db_incline_press.gif" alt="DB Incline Press (Chest)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=8iPEnn-ltC8" target="_blank" class="ex-r"><span class="ex-n">4</span>DB Incline Press (Chest)</a></div></div>
-<div class="ex-row"><img src="gifs/lateral_raise.gif" alt="Lateral Raise (Shoulders)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=3VcKaXpzqRo" target="_blank" class="ex-r"><span class="ex-n">5</span>Lateral Raise (Shoulders)</a></div></div>
-<div class="ex-row"><img src="gifs/db_shoulder_press.gif" alt="DB Shoulder Press (Shoulders)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=fjQdQNjqS1A" target="_blank" class="ex-r"><span class="ex-n">6</span>DB Shoulder Press (Shoulders)</a></div></div>
-<div class="ex-row"><img src="gifs/lat_pulldown.gif" alt="Lat Pulldown (Lats)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=7vVrl_4ioSE" target="_blank" class="ex-r"><span class="ex-n">7</span>Lat Pulldown (Lats)</a></div></div>
-<div class="ex-row"><img src="gifs/seated_cable_row.gif" alt="Machine Row (Back)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=xQNrFHEMhI4" target="_blank" class="ex-r"><span class="ex-n">8</span>Machine Row (Back)</a></div></div>
-<div class="ex-row"><img src="gifs/barbell_bicep_curl.gif" alt="Barbell Bicep Curl (Biceps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=kwG2ipFRgfo" target="_blank" class="ex-r"><span class="ex-n">9</span>Barbell Bicep Curl (Biceps)</a></div></div>
-<div class="ex-row"><img src="gifs/skull_crushers.gif" alt="Skull Crushers (Triceps)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=FzjBUeUf1L0" target="_blank" class="ex-r"><span class="ex-n">10</span>Skull Crushers (Triceps)</a></div></div>
-<div class="ex-row"><img src="gifs/leg_raise.gif" alt="Leg Raise (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=JB2oyawG9KI" target="_blank" class="ex-r"><span class="ex-n">11</span>Leg Raise (Abs)</a></div></div>
-</div><div class="ex-c" style="--ac:#00e676;"><div class="ex-t" style="color:#00e676;">Day 5 — Lower</div><div class="ex-row"><img src="gifs/leg_press.gif" alt="Leg Press (Legs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=IZxyjW7MPJQ" target="_blank" class="ex-r"><span class="ex-n">1</span>Leg Press (Legs)</a></div></div>
-<div class="ex-row"><img src="gifs/leg_curl.gif" alt="Lying Leg Curl (Hamstrings)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=zDszHA7GnLY" target="_blank" class="ex-r"><span class="ex-n">2</span>Lying Leg Curl (Hamstrings)</a></div></div>
-<div class="ex-row"><img src="gifs/leg_extensions.gif" alt="Leg Extensions (Quads)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=yQ3J0I9DJPQ" target="_blank" class="ex-r"><span class="ex-n">3</span>Leg Extensions (Quads)</a></div></div>
-<div class="ex-row"><img src="gifs/farmer_carries.gif" alt="Farmer Carries (Core)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=rt17lmnaLSM" target="_blank" class="ex-r"><span class="ex-n">4</span>Farmer Carries (Core)</a></div></div>
-<div class="ex-row"><img src="gifs/hip_abduction.gif" alt="Hip Abduction/Adduction (Legs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=7pbZA7ncuq8" target="_blank" class="ex-r"><span class="ex-n">5</span>Hip Abduction/Adduction (Legs)</a></div></div>
-<div class="ex-row"><img src="gifs/calf_raises.gif" alt="Calf Raises (Calves)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=ix9LRCNb38U" target="_blank" class="ex-r"><span class="ex-n">6</span>Calf Raises (Calves)</a></div></div>
-<div class="ex-row"><img src="gifs/plank.gif" alt="Plank (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=ASdvN_XEl_c" target="_blank" class="ex-r"><span class="ex-n">7</span>Plank (Abs)</a></div></div>
-<div class="ex-row"><img src="gifs/side_plank.gif" alt="Side Plank (Abs)" class="ex-gif" loading="lazy"><div class="ex-info"><a href="https://www.youtube.com/watch?v=K2VljzCC16g" target="_blank" class="ex-r"><span class="ex-n">8</span>Side Plank (Abs)</a></div></div>
-</div></div>
-<div class="note">3 sets x 10 reps (Fittr plan) · Pre-workout dynamic stretch + post-workout stretches every session</div>
+<div class="note">Cutting rule: keep weights HEAVY (RPE 7-9), reduce sets not weight · Sources: Stronger By Science, RP Strength, Jeff Nippard, r/fitness</div>
 </div>
 
 <!-- ═══ BODY METRICS ═══ -->
 <div class="page" id="bm">
 <h1>Body Metrics</h1>
-<div class="sub">Measurements from Fittr coach · 68 kg soft target</div>
+<div class="sub">Measurements from Fittr coach · Target: 68 kg</div>
 <div class="label">Weight Trend (Fitbit API)</div>
 <div class="chart-wrap">
-<div class="chart-legend"><span><i style="background:var(--green);"></i>Weight (kg)</span><span style="color:var(--red);opacity:0.6;">--- 68 kg soft target</span></div>
+<div class="chart-legend"><span><i style="background:var(--green);"></i>Weight (kg)</span><span style="color:var(--red);opacity:0.6;">--- 68 kg target</span></div>
 <svg viewBox="0 0 700 160" style="width:100%;display:block;">
 <defs>
-<linearGradient id="g3143" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="g7665" x1="0" y1="0" x2="0" y2="1">
 <stop offset="0%" stop-color="#00e676" stop-opacity="0.3"/>
 <stop offset="100%" stop-color="#00e676" stop-opacity="0.02"/>
 </linearGradient>
@@ -1017,7 +972,7 @@ h1{font-size:26px;}
 <text x="34" y="23" fill="#444" font-size="10" text-anchor="end" font-family="Inter">83</text>
 <line x1="40" y1="39" x2="684" y2="39" stroke="#ff5252" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.4"/>
 
-<path d="M 40.0 33.6 C 52.9 33.6, 59.3 34.2, 72.2 34.2 C 85.1 34.2, 91.5 34.4, 104.4 34.4 C 117.3 34.4, 123.7 34.6, 136.6 34.6 C 149.5 34.6, 155.9 34.6, 168.8 34.6 C 181.7 34.6, 188.1 34.4, 201.0 34.4 C 213.9 34.4, 220.3 34.8, 233.2 34.8 C 246.1 34.8, 252.5 34.4, 265.4 34.4 C 278.3 34.4, 284.7 34.7, 297.6 34.7 C 310.5 34.7, 316.9 34.9, 329.8 34.9 C 342.7 34.9, 349.1 34.1, 362.0 34.1 C 374.9 34.1, 381.3 34.7, 394.2 34.7 C 407.1 34.7, 413.5 34.9, 426.4 34.9 C 439.3 34.9, 445.7 34.9, 458.6 34.9 C 471.5 34.9, 477.9 34.9, 490.8 34.9 C 503.7 34.9, 510.1 35.6, 523.0 35.6 C 535.9 35.6, 542.3 35.6, 555.2 35.6 C 568.1 35.6, 574.5 35.1, 587.4 35.1 C 600.3 35.1, 606.7 34.9, 619.6 34.9 C 632.5 34.9, 638.9 35.3, 651.8 35.3 C 664.7 35.3, 671.1 36.1, 684.0 36.1 L 684.0 124 L 40.0 124 Z" fill="url(#g3143)"/>
+<path d="M 40.0 33.6 C 52.9 33.6, 59.3 34.2, 72.2 34.2 C 85.1 34.2, 91.5 34.4, 104.4 34.4 C 117.3 34.4, 123.7 34.6, 136.6 34.6 C 149.5 34.6, 155.9 34.6, 168.8 34.6 C 181.7 34.6, 188.1 34.4, 201.0 34.4 C 213.9 34.4, 220.3 34.8, 233.2 34.8 C 246.1 34.8, 252.5 34.4, 265.4 34.4 C 278.3 34.4, 284.7 34.7, 297.6 34.7 C 310.5 34.7, 316.9 34.9, 329.8 34.9 C 342.7 34.9, 349.1 34.1, 362.0 34.1 C 374.9 34.1, 381.3 34.7, 394.2 34.7 C 407.1 34.7, 413.5 34.9, 426.4 34.9 C 439.3 34.9, 445.7 34.9, 458.6 34.9 C 471.5 34.9, 477.9 34.9, 490.8 34.9 C 503.7 34.9, 510.1 35.6, 523.0 35.6 C 535.9 35.6, 542.3 35.6, 555.2 35.6 C 568.1 35.6, 574.5 35.1, 587.4 35.1 C 600.3 35.1, 606.7 34.9, 619.6 34.9 C 632.5 34.9, 638.9 35.3, 651.8 35.3 C 664.7 35.3, 671.1 36.1, 684.0 36.1 L 684.0 124 L 40.0 124 Z" fill="url(#g7665)"/>
 <path d="M 40.0 33.6 C 52.9 33.6, 59.3 34.2, 72.2 34.2 C 85.1 34.2, 91.5 34.4, 104.4 34.4 C 117.3 34.4, 123.7 34.6, 136.6 34.6 C 149.5 34.6, 155.9 34.6, 168.8 34.6 C 181.7 34.6, 188.1 34.4, 201.0 34.4 C 213.9 34.4, 220.3 34.8, 233.2 34.8 C 246.1 34.8, 252.5 34.4, 265.4 34.4 C 278.3 34.4, 284.7 34.7, 297.6 34.7 C 310.5 34.7, 316.9 34.9, 329.8 34.9 C 342.7 34.9, 349.1 34.1, 362.0 34.1 C 374.9 34.1, 381.3 34.7, 394.2 34.7 C 407.1 34.7, 413.5 34.9, 426.4 34.9 C 439.3 34.9, 445.7 34.9, 458.6 34.9 C 471.5 34.9, 477.9 34.9, 490.8 34.9 C 503.7 34.9, 510.1 35.6, 523.0 35.6 C 535.9 35.6, 542.3 35.6, 555.2 35.6 C 568.1 35.6, 574.5 35.1, 587.4 35.1 C 600.3 35.1, 606.7 34.9, 619.6 34.9 C 632.5 34.9, 638.9 35.3, 651.8 35.3 C 664.7 35.3, 671.1 36.1, 684.0 36.1" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 <circle cx="40.0" cy="33.6" r="2.5" fill="#00e676" opacity="0.5"/>
 <circle cx="201.0" cy="34.4" r="2.5" fill="#00e676" opacity="0.5"/>
@@ -1057,17 +1012,13 @@ h1{font-size:26px;}
 </svg>
 </div>
 <div class="stats" style="grid-template-columns:repeat(3,1fr);"><div class="stat" style="--ac:var(--green);"><div class="v">70.6 kg</div><div class="l">⚖️ Weight</div></div>
-<div class="stat" style="--ac:var(--blue);"><div class="v">35 cm</div><div class="l">📏 Waist</div></div>
-<div class="stat" style="--ac:var(--teal);"><div class="v">19 cm</div><div class="l">🦵 Quads</div></div>
-<div class="stat" style="--ac:var(--purple);"><div class="v">12 cm</div><div class="l">💪 Arms</div></div>
-<div class="stat" style="--ac:var(--yellow);"><div class="v">37.5 cm</div><div class="l">🫁 Chest</div></div>
-<div class="stat" style="--ac:var(--red);"><div class="v">37.5 cm</div><div class="l">🍑 Hip</div></div>
+<div class="stat" style="--ac:var(--blue);"><div class="v">36 cm</div><div class="l">📏 Waist</div></div>
+<div class="stat" style="--ac:var(--teal);"><div class="v">19.25 cm</div><div class="l">🦵 Quads</div></div>
+<div class="stat" style="--ac:var(--purple);"><div class="v">12.25 cm</div><div class="l">💪 Arms</div></div>
+<div class="stat" style="--ac:var(--yellow);"><div class="v">37.25 cm</div><div class="l">🫁 Chest</div></div>
+<div class="stat" style="--ac:var(--red);"><div class="v">39.25 cm</div><div class="l">🍑 Hip</div></div>
 </div>
 <div class="label">Measurement History</div>
-<div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-03-24</span><span class="log-m">70.6kg · W35 · C37.5 · A12 · Q19 · H37.5 · N14.5</span></div>
-<div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-03-17</span><span class="log-m">71kg · W36 · C35 · A12 · Q18 · H38 · N14.2</span></div>
-<div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-03-11</span><span class="log-m">72.2kg · W— · C— · A— · Q— · H— · N—</span></div>
-<div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-03-08</span><span class="log-m">71.7kg · W— · C— · A— · Q— · H— · N—</span></div>
 <div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-03-03</span><span class="log-m">71.8kg · W36 · C37.25 · A12.25 · Q19.25 · H39.25 · N14.25</span></div>
 <div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-02-28</span><span class="log-m">72.6kg · W— · C— · A— · Q— · H— · N—</span></div>
 <div class="log-r"><span class="log-d" style="background:var(--teal);"></span><span class="log-t">2026-02-24</span><span class="log-m">73.2kg · W36 · C37 · A12.2 · Q18.2 · H39 · N14.6</span></div>
@@ -1087,7 +1038,7 @@ h1{font-size:26px;}
 <h1>Body Hacks</h1>
 <div class="sub">Researched from r/fitness, r/loseit, PubMed — real vs bro-science</div>
 <div class="proto">
-<div class="proto-t">Muscle-First Nutrition Protocol</div>
+<div class="proto-t">Ram's 41-Day Cut Protocol</div>
 <div class="proto-i"><span class="proto-n">1</span>1800 cal/day avg, 150g protein</div>
 <div class="proto-i"><span class="proto-n">2</span>Sleep 7-8 hours — #1 lever</div>
 <div class="proto-i"><span class="proto-n">3</span>Lift 3-4x/week at Planet Fitness</div>
@@ -1110,10 +1061,12 @@ h1{font-size:26px;}
 <div class="hs">Portion control, not magic.</div><div class="hr">12pm-8pm if you prefer bigger meals.</div></div>
 <div class="hc"><div class="hh"><span>🔥</span><span class="hn">Metabolic Adaptation</span><span class="hb" style="color:#448aff;border-color:#448aff;">KNOW IT</span></div>
 <div class="hs">~50 cal/day slower.</div><div class="hr">Negligible for 6 weeks.</div></div>
-<div class="hc"><div class="hh"><span>📈</span><span class="hn">Reverse Diet</span><span class="hb" style="color:#ffd740;border-color:#ffd740;">OPTIONAL</span></div>
-<div class="hs">For transitioning phases.</div><div class="hr">Add 100 cal/week for 3 weeks.</div></div>
+<div class="hc"><div class="hh"><span>📈</span><span class="hn">Reverse Diet</span><span class="hb" style="color:#b388ff;border-color:#b388ff;">AFTER 68KG</span></div>
+<div class="hs">Prevents rebound.</div><div class="hr">Add 100 cal/week for 3 weeks.</div></div>
+<div class="hc"><div class="hh"><span>⏸️</span><span class="hn">Diet Breaks</span><span class="hb" style="color:#ff5252;border-color:#ff5252;">SKIP</span></div>
+<div class="hs">Too short a cut.</div><div class="hr">For 12+ week cuts only.</div></div>
 
-<div class="note">Consistency + protein do 95% of the work.</div>
+<div class="note">For a 4kg cut, fundamentals do 95% of the work.</div>
 </div>
 
 <!-- ═══ PROGRESS PHOTOS ═══ -->
